@@ -6,8 +6,17 @@ After cloning the directory, grab the Node.js dependancies by running:
     npm install
 
 
+You need to set the Azure access key, account and container in a config.js file as follows:
 
-You need to set the Azure access key, account and container in the server.js file (not setting this in command line argument, due to potential security vulnerability).
+'''
+var config = {};
+
+config.azureAccessKey = '<ACCESS KEY>';
+config.azureStorageAccount = '<STORAGE ACCOUNT>';
+config.azureContainerName = '<CONTAINER>';
+
+module.exports = config;
+'''
 
 The command line arguments allow for the path to upload.  It also allows to vary the number of days to keep files for (if not specified, no files will be deleted).
 

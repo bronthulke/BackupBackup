@@ -1,3 +1,4 @@
+var config = require('./config');
 var azure = require('azure-storage');
 var fs = require('fs');
 var dir = require('node-dir');
@@ -11,23 +12,22 @@ var cli = commandLineArgs([
 
 var usage = cli.getUsage({
 	title: "BackupBackup",
-    description: "Uploads a directory of files to Azure. Optionally deletes old files (if daystokeep is specified). Directory structures will be flattened into the target container."
+    description: "Uploads a directory of files to Azure. Optionally deletes old files (if daystokeep is specified)."
 });
 var options = cli.parse();
 
 if(options.pathtobackup === undefined) {
 	console.log(usage);
-	process.exit(0);	
+	process.exit(1);	
 }
 
-var azureAccessKey = 'Mh2Z3k7sXyModjx9MkyfHYI7zcSBgcGQOFdlMrbMuqvPH0eOqMqx42tazF2oDdCMt4k8io+iUa4peIJlf0Np4w==';
-var azureStorageAccount = 'angelwebdesigns';
-var azureContainerName = 'backups';
-console.log("Container: " + azureContainerName);
-console.log("Storage Account: " + azureStorageAccount);
+console.log("********** BackupBackup! **********");
+console.log("Container: " + config.azureContainerName);
+console.log("Storage Account: " + config.azureStorageAccount);
+console.log();
 
 //create a blob service set explicit credentials
-var blobService = azure.createBlobService(azureStorageAccount, azureAccessKey);
+var blobService = azure.createBlobService(config.azureStorageAccount, config.azureAccessKey);
 
 var backupDirectory = options.pathtobackup;
 
@@ -63,7 +63,7 @@ function UploadFileToAzure(filename, backupDir) {
 
 	// Remove the backup directory (preserving any subdirectories), and trailing slashes
 	var filenammeAzure = filename.replace(backupDir.replace("/", "\\"),"").replace(/^[\/\\]|[\/\\]$/g, '');
-	blobService.createBlockBlobFromLocalFile(azureContainerName, filenammeAzure, filename, function(error, result, response){
+	blobService.createBlockBlobFromLocalFile(config.azureContainerName, filenammeAzure, filename, function(error, result, response){
 	  if(!error){
 	  	console.log("File uploaded [" + filenammeAzure + "]");
 	  }
