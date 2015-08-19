@@ -26,6 +26,8 @@ Azure containers are single-level, and as such all directories will be flattened
 If you are trying to upload too many files it will run out of memory.  I'm still wrapping my head around how the Azure Storage SDK for Node.js works, and I believe part of the issue is that the node-dir forEach loop over the files processes each one asyncronously (based on logging of progress) so for now it may have limits in number of files it will handle.  It's late (or rather, early now), and my head hurts.
 My current use case is only for 7 or so files at a time (to upload the last week's database backups).
 
+I would also like to improve this to show progress in future for debugging purposes.
+
 ## Disclaimer
 This is my very first Node.js project, so please feel free to make suggestions for improvements (either via Issues or Pull Requests).  Anyone is welcome to contribute.
 
