@@ -26,25 +26,10 @@ var azureContainerName = 'backups';
 console.log("Container: " + azureContainerName);
 console.log("Storage Account: " + azureStorageAccount);
 
+//create a blob service set explicit credentials
+var blobService = azure.createBlobService(azureStorageAccount, azureAccessKey);
+
 var backupDirectory = options.pathtobackup;
-
-
-function UploadFileToAzure(filename) {
-
-	var filenammeAzure = filename.replace(backupDirectory,""); // todo: use a regex to ensure it gets only from the start
-
-	blobService.createBlockBlobFromLocalFile(azureContainerName, filenammeAzure, filename, function(error, result, response){
-	  if(!error){
-	  	console.log("File uploaded");
-		process.exit(0);
-	  }
-	  else {
-	  	console.log("Uh oh! Failed= to upload - result [" + error + "]");
-		process.exit(1);
-	  }
-	});
-
-}
 
 var doDelete = false;
 if(options.daystokeep !== undefined) {
@@ -52,9 +37,6 @@ if(options.daystokeep !== undefined) {
 	doDelete = true;
 	console.log("Will delete any files in source directory older than " + options.daystokeep + " days (" + dateOneWeekAgo.format() + ")");
 }
-
-//create a blob service set explicit credentials
-var blobService = azure.createBlobService(azureStorageAccount, azureAccessKey);
 
 dir.files(backupDirectory, function(err, files) {
 	if (err) throw err;
@@ -71,9 +53,23 @@ dir.files(backupDirectory, function(err, files) {
 			}
 			else {
 				console.log("Uploading to Azure [" + path + "]");
-				UploadFileToAzure(path);
+				UploadFileToAzure(path, backupDirectory);
 			}
 		}));
 	})
 });
 
+function UploadFileToAzure(filename, backupDir) {
+
+	// Remove the backup directory (preserving any subdirectories), and trailing slashes
+	var filenammeAzure = filename.replace(backupDir.replace("/", "\\"),"").replace(/^[\/\\]|[\/\\]$/g, '');
+	blobService.createBlockBlobFromLocalFile(azureContainerName, filenammeAzure, filename, function(error, result, response){
+	  if(!error){
+	  	console.log("File uploaded [" + filenammeAzure + "]");
+	  }
+	  else {
+	  	console.log("Uh oh! Failed to upload [" + filenammeAzure + "] - result [" + error + "]");
+	  }
+	});
+
+}
