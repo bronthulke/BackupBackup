@@ -1,0 +1,17 @@
+{
+  "name": "BackupBackup",
+  "version": "1.0.0",
+  "author": "Bron Squire <bron@angelwebdesigns.com.au>",
+  "main": "server.js",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/bronsquire/BackupBackup"
+  },
+  "devDependencies": {
+    "azure-storage": "^0.5.0",
+    "command-line-args": "^1.0.0",
+    "moment": "^2.10.6",
+    "node-dir": "^0.1.8"
+  },
+  "license": "MIT"
+}
