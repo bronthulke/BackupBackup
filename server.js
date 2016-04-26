@@ -33,9 +33,9 @@ var backupDirectory = options.pathtobackup;
 
 var doDelete = false;
 if(options.daystokeep !== undefined) {
-	var  dateOneWeekAgo = moment().subtract(Number(options.daystokeep), "days");
+	var  deleteThresholdDate = moment().subtract(Number(options.daystokeep), "days");
 	doDelete = true;
-	console.log("Will delete any files in source directory older than " + options.daystokeep + " days (" + dateOneWeekAgo.format() + ")");
+	console.log("Will delete any files in source directory older than " + options.daystokeep + " days (" + deleteThresholdDate.format() + ")");
 }
 
 dir.files(backupDirectory, function(err, files) {
@@ -47,7 +47,7 @@ dir.files(backupDirectory, function(err, files) {
 		if(fs.stat(path, function(err, stats) {
 			if (err) throw err;
 			var dateLastModified = moment(stats.mtime)
-			if(doDelete && (dateLastModified < dateOneWeekAgo)) {
+			if(doDelete && (dateLastModified < deleteThresholdDate)) {
 				console.log("Deleting old file [" + path + "]");
 				fs.unlink(path);
 			}
