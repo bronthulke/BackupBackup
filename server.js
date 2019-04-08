@@ -52,7 +52,6 @@ dir.files(backupDirectory, function(err, files) {
 				fs.unlink(path);
 			}
 			else {
-				console.log("Uploading to Azure [" + path + "]");
 				UploadFileToAzure(path, backupDirectory);
 			}
 		}));
@@ -62,14 +61,25 @@ dir.files(backupDirectory, function(err, files) {
 function UploadFileToAzure(filename, backupDir) {
 
 	// Remove the backup directory (preserving any subdirectories), and trailing slashes
-	var filenammeAzure = filename.replace(backupDir.replace("/", "\\"),"").replace(/^[\/\\]|[\/\\]$/g, '');
-	blobService.createBlockBlobFromLocalFile(config.azureContainerName, filenammeAzure, filename, function(error, result, response){
-	  if(!error){
-	  	console.log("File uploaded [" + filenammeAzure + "]");
-	  }
-	  else {
-	  	console.log("Uh oh! Failed to upload [" + filenammeAzure + "] - result [" + error + "]");
-	  }
+	var filenameAzure = filename.replace(backupDir.replace("/", "\\"),"").replace(/^[\/\\]|[\/\\]$/g, '');
+	
+	blobService.doesBlobExist(config.azureContainerName, filenameAzure, function(error, result) {
+		if (!error) {
+			if (result) {
+				console.log("File  [" + filenameAzure + "] already exists in directory...");
+			} else {
+				console.log("File does not exist, uploading to Azure [" + filename + "]");
+				
+				blobService.createBlockBlobFromLocalFile(config.azureContainerName, filenameAzure, filename, function(error, result, response){
+					if(!error){
+						console.log("File uploaded [" + filenameAzure + "]");
+					}
+					else {
+						console.log("Uh oh! Failed to upload [" + filenameAzure + "] - result [" + error + "]");
+					}
+				});
+				
+			}
+		}
 	});
-
 }
