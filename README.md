@@ -11,8 +11,7 @@ You need to set the Azure access key, account and container in a config.js file 
 ```
 var config = {};
 
-config.azureAccessKey = '<ACCESS KEY>';
-config.azureStorageAccount = '<STORAGE ACCOUNT>';
+config.azureStorageConnectionString = '<CONNECTION STRING>';
 config.azureContainerName = '<CONTAINER>';
 
 module.exports = config;
