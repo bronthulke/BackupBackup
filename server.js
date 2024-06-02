@@ -66,8 +66,6 @@ async function UploadFileToAzure(filename, backupDir) {
 
 	const blockBlobClient = containerClient.getBlockBlobClient(filenameAzure);
 
-	// Note: since upgrading to the latest Azure Storage Blob library, the "exists" check isn't working, need to work out how
-	// to do that and fix it.
 	if (await blockBlobClient.exists()) {
 		console.log("File  [" + filenameAzure + "] already exists in directory...");
 	}
